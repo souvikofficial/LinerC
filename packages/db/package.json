@@ -1,0 +1,26 @@
+{
+    "name": "@x402/db",
+    "version": "0.0.0",
+    "main": "./src/client.ts",
+    "types": "./src/client.ts",
+    "scripts": {
+        "db:generate": "prisma generate",
+        "db:migrate": "prisma migrate dev",
+        "db:push": "prisma db push",
+        "db:seed": "tsx seed.ts",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "@prisma/client": "^5.9.1",
+        "@x402/types": "workspace:*",
+        "date-fns": "^4.1.0",
+        "dotenv": "^17.2.3"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.16",
+        "eslint": "^8.56.0",
+        "prisma": "^5.9.1",
+        "tsx": "^4.7.1",
+        "typescript": "^5.3.3"
+    }
+}

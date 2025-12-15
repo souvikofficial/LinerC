@@ -1,0 +1,302 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  ANALYST
+}
+
+enum Chain {
+  BASE   @map("base")
+  SOLANA @map("solana")
+}
+
+enum X402EventType {
+  ISSUED_402        @map("402_issued")
+  PAYMENT_INITIATED @map("payment_initiated")
+  VERIFIED          @map("verified")
+  SETTLED           @map("settled")
+  DELIVERED         @map("delivered")
+  FAILED            @map("failed")
+}
+
+model Merchant {
+  id              String            @id @default(uuid())
+  name            String
+  slug            String            @unique
+  planTier        String            @default("free")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  users           User[]
+  apiKeys         ApiKey[]
+  merchantWallets MerchantWallet[]
+  
+  endpoints       Endpoint[]
+  payerIdentities PayerIdentity[]
+  events          X402Event[]
+
+  // Aggregates
+  funnelAggs      FunnelAgg[]
+  cohortAggs      CohortAgg[]
+  revenueAggs     RevenueAgg[]
+
+  @@map("merchants")
+}
+
+model Endpoint {
+  id              String      @id @default(uuid())
+  merchantId      String
+  merchant        Merchant    @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  name            String
+  path            String
+  price           Decimal     @db.Decimal(18, 6)
+  currency        String      @default("USDC")
+  chainPreference Chain[]
+  createdAt       DateTime    @default(now())
+  
+  events          X402Event[]
+  funnelAggs      FunnelAgg[]
+  revenueAggs     RevenueAgg[]
+  cohortAggs      CohortAgg[]
+
+  @@map("endpoints")
+}
+
+model Facilitator {
+  id               String           @id @default(uuid())
+  name             String
+  apiBase          String
+  reliabilityScore Float            @default(100.0)
+  
+  events           X402Event[]
+  facilitatorAggs  FacilitatorAgg[]
+  funnelAggs       FunnelAgg[]
+
+  @@map("facilitators")
+}
+
+model PayerIdentity {
+  id          String      @id @default(uuid())
+  merchantId  String
+  hash        String
+  firstSeenAt DateTime    @default(now())
+  lastSeenAt  DateTime    @default(now())
+  
+  merchant    Merchant    @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  events      X402Event[]
+
+  @@unique([merchantId, hash])
+  @@map("payer_identities")
+}
+
+model X402Event {
+  id                String        @id @default(uuid())
+  requestId         String        @unique
+  merchantId        String
+  endpointId        String?
+  facilitatorId     String?
+  payerId           String?
+  chain             Chain?
+  eventType         X402EventType
+  amount            Decimal?      @db.Decimal(18, 6)
+  currency          String?
+  feeEstimate       Decimal?      @db.Decimal(18, 6)
+  txHash            String?
+  blockNumberOrSlot BigInt?
+  country           String?
+  userAgent         String?
+  createdAt         DateTime      @default(now())
+
+  merchant    Merchant       @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  endpoint    Endpoint?      @relation(fields: [endpointId], references: [id])
+  facilitator Facilitator?   @relation(fields: [facilitatorId], references: [id])
+  payer       PayerIdentity? @relation(fields: [payerId], references: [id])
+
+  @@index([merchantId, endpointId, eventType, createdAt])
+  @@index([payerId, createdAt])
+  @@map("x402_events")
+}
+
+model ChainSnapshot {
+  id                String   @id @default(uuid())
+  chain             Chain
+  gasOrFeePerUnit   Decimal  @db.Decimal(18, 9)
+  avgConfirmationMs Int
+  congestionIndex   Float
+  capturedAt        DateTime @default(now())
+
+  @@index([chain, capturedAt(sort: Desc)])
+  @@map("chain_snapshots")
+}
+
+// Aggregates
+
+model FunnelAgg {
+  id                 String   @id @default(uuid())
+  day                DateTime @db.Date
+  merchantId         String
+  endpointId         String?
+  chain              Chain?
+  facilitatorId      String?
+  
+  issued             Int      @default(0)
+  initiated          Int      @default(0)
+  settled            Int      @default(0)
+  delivered          Int      @default(0)
+  
+  avgMsIssueToInitiate Int    @default(0)
+  avgMsInitiateToSettle Int   @default(0)
+  avgMsSettleToDeliver Int    @default(0)
+
+  merchant    Merchant     @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  endpoint    Endpoint?    @relation(fields: [endpointId], references: [id])
+  facilitator Facilitator? @relation(fields: [facilitatorId], references: [id])
+
+  @@unique([day, merchantId, endpointId, chain, facilitatorId]) // Composite unique for upserts
+  @@map("funnel_aggs")
+}
+
+model CohortAgg {
+  id           String   @id @default(uuid())
+  cohortDay    DateTime @db.Date
+  merchantId   String
+  endpointId   String?
+  
+  payers       Int      @default(0)
+  d1_retained  Int      @default(0)
+  d7_retained  Int      @default(0)
+  d30_retained Int      @default(0)
+  ltv_net      Decimal  @default(0) @db.Decimal(18, 2)
+
+  merchant     Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  endpoint     Endpoint? @relation(fields: [endpointId], references: [id])
+
+  @@unique([cohortDay, merchantId, endpointId])
+  @@map("cohort_aggs")
+}
+
+model RevenueAgg {
+  id           String   @id @default(uuid())
+  day          DateTime @db.Date
+  merchantId   String
+  endpointId   String?
+  chain        Chain?
+  
+  grossRevenue Decimal  @default(0) @db.Decimal(18, 2)
+  totalFees    Decimal  @default(0) @db.Decimal(18, 2)
+  netRevenue   Decimal  @default(0) @db.Decimal(18, 2)
+  arpa         Decimal  @default(0) @db.Decimal(18, 2)
+
+  merchant     Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  endpoint     Endpoint? @relation(fields: [endpointId], references: [id])
+
+  @@unique([day, merchantId, endpointId, chain])
+  @@map("revenue_aggs")
+}
+
+model FacilitatorAgg {
+  id              String      @id @default(uuid())
+  day             DateTime    @db.Date
+  facilitatorId   String
+  chain           Chain?
+  
+  volume          Decimal     @default(0) @db.Decimal(18, 2)
+  feesEarned      Decimal     @default(0) @db.Decimal(18, 2)
+  avgSettlementMs Int         @default(0)
+  errorRate       Float       @default(0)
+
+  facilitator     Facilitator @relation(fields: [facilitatorId], references: [id], onDelete: Cascade)
+
+  @@unique([day, facilitatorId, chain])
+  @@map("facilitator_aggs")
+}
+
+// Previous models to keep
+model MerchantWallet {
+  id         String   @id @default(uuid())
+  merchantId String
+  merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  chainId    String
+  address    String
+  
+  @@unique([merchantId, chainId])
+  @@map("merchant_wallets")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(ANALYST)
+  merchantId    String?
+  merchant      Merchant? @relation(fields: [merchantId], references: [id])
+  
+  accounts      Account[]
+  sessions      Session[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model ApiKey {
+  id         String   @id @default(uuid())
+  merchantId String
+  merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  key        String   @unique // Hashed key
+  scopes     String[] // e.g., ["read", "write"]
+  expiresAt  DateTime?
+  createdAt  DateTime @default(now())
+
+  @@map("api_keys")
+}

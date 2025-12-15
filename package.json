@@ -1,0 +1,27 @@
+{
+    "name": "x402-dashboard",
+    "private": true,
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "db:generate": "turbo run db:generate",
+        "db:migrate": "turbo run db:migrate",
+        "db:seed": "turbo run db:seed",
+        "seed": "pnpm db:seed",
+        "test": "turbo run test",
+        "test:unit": "turbo run test:unit",
+        "test:e2e": "turbo run test:e2e"
+    },
+    "devDependencies": {
+        "turbo": "^1.11.3",
+        "typescript": "^5.3.3",
+        "prettier": "^3.2.4",
+        "@types/node": "^20.11.16"
+    },
+    "packageManager": "pnpm@8.15.1",
+    "engines": {
+        "node": ">=18"
+    }
+}
