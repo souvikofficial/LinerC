@@ -18,7 +18,6 @@ LinerC is a modern, real-time analytics dashboard for x402 payment protocol inte
 
 ### 🎨 Design
 - Premium dark theme with neon lime (`#CDFF00`) accents
-- Inspired by [Payy.link](https://payy.link) UI/UX
 - Fully responsive layout
 - Glassmorphism effects and modern typography
 
