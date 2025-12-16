@@ -1,4 +1,4 @@
-# ⚡ LinerC Dashboard
+# LinerC Dashboard
 
 > **Stablecoin-native payment analytics for the autonomous web**
 
@@ -7,7 +7,7 @@ LinerC is a modern, real-time analytics dashboard for x402 payment protocol inte
 
 ---
 
-## ✨ Features
+##  Features
 
 ### 🎯 Core Functionality
 - **Real-time Payment Analytics** — Track x402 payments across multiple chains
