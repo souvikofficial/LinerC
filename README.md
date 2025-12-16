@@ -2,9 +2,8 @@
 
 > **Stablecoin-native payment analytics for the autonomous web**
 
-LinerC is a modern, real-time analytics dashboard for x402 payment protocol integration. Built with Next.js 14, featuring a premium dark UI inspired by [Payy](https://payy.link).
+LinerC is a modern, real-time analytics dashboard for x402 payment protocol integration. Built with Next.js 14, featuring a premium dark UI inspired.
 
-![LinerC Dashboard](./docs/dashboard-preview.png)
 
 ---
 
