@@ -218,7 +218,6 @@ MIT © 2024 LinerC
 ## 🔗 Links
 
 - [x402 Protocol](https://x402.org) — Payment protocol specification
-- [Payy](https://payy.link) — Design inspiration
 - [Next.js](https://nextjs.org) — React framework
 - [Prisma](https://prisma.io) — Database ORM
 
