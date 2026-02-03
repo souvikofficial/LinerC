@@ -313,36 +313,44 @@ export default function IntegrationPage() {
                 }}>
                     WHAT'S NEXT?
                 </div>
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '16px'
-                }}>
-                    {[
-                        { title: 'READ DOCS', desc: 'Full API reference', link: '#' },
-                        { title: 'VIEW EVENTS', desc: 'See your payments', link: '/dashboard/events' },
-                        { title: 'JOIN DISCORD', desc: 'Get support', link: '#' },
-                    ].map((item) => (
-                        <a key={item.title} href={item.link} style={{
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 800 }}>Docs</div>
+                        <a href="#" style={{
                             padding: '20px',
                             background: '#1a1a1a',
                             borderRadius: '8px',
                             textDecoration: 'none',
-                            color: '#fff',
-                            transition: 'background 0.2s'
+                            color: '#fff'
                         }}>
-                            <div style={{
-                                fontSize: '13px',
-                                fontWeight: 700,
-                                marginBottom: '4px'
-                            }}>
-                                {item.title} →
-                            </div>
-                            <div style={{ fontSize: '12px', color: '#666' }}>
-                                {item.desc}
-                            </div>
+                            <div style={{ fontSize: '13px', fontWeight: 700, marginBottom: '4px' }}>READ DOCS →</div>
+                            <div style={{ fontSize: '12px', color: '#666' }}>Full API reference</div>
                         </a>
-                    ))}
+                        <a href="#" style={{
+                            padding: '20px',
+                            background: '#1a1a1a',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            color: '#fff'
+                        }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, marginBottom: '4px' }}>JOIN DISCORD →</div>
+                            <div style={{ fontSize: '12px', color: '#666' }}>Get support</div>
+                        </a>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 800 }}>Events</div>
+                        <a href="/dashboard/events" style={{
+                            padding: '20px',
+                            background: '#1a1a1a',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            color: '#fff'
+                        }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, marginBottom: '4px' }}>VIEW EVENTS →</div>
+                            <div style={{ fontSize: '12px', color: '#666' }}>See your payments</div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

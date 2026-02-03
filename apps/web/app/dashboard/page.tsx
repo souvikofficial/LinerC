@@ -1,4 +1,5 @@
 "use client";
+import { DownloadButton } from "@/components/download-button"
 
 const lime = '#CDFF00';
 const dark = '#0A0A0A';
@@ -213,20 +214,20 @@ export default function DashboardPage() {
                     }}>
                         VOLUME TREND (7D)
                     </div>
-                    <button style={{
-                        padding: '8px 16px',
-                        background: lime,
-                        color: dark,
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontWeight: 700,
-                        fontSize: '11px',
-                        cursor: 'pointer',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em'
-                    }}>
-                        DOWNLOAD CSV
-                    </button>
+                        {/* download CSV for volume trend */}
+                        <DownloadButton
+                            data={[
+                                { day: 'Day 1', volume: 40 },
+                                { day: 'Day 2', volume: 65 },
+                                { day: 'Day 3', volume: 45 },
+                                { day: 'Day 4', volume: 80 },
+                                { day: 'Day 5', volume: 55 },
+                                { day: 'Day 6', volume: 90 },
+                                { day: 'Day 7', volume: 70 }
+                            ]}
+                            filename="volume-trend.csv"
+                            label="Download CSV"
+                        />
                 </div>
                 <div style={{
                     height: '200px',

@@ -7,6 +7,12 @@ const darkGray = '#141414';
 
 export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState('general');
+    const [notifications, setNotifications] = useState([
+        { label: 'Payment alerts', desc: 'Get notified for every payment', enabled: true },
+        { label: 'Weekly digest', desc: 'Summary of your weekly activity', enabled: true },
+        { label: 'Failed payments', desc: 'Alert when a payment fails', enabled: true },
+        { label: 'Marketing emails', desc: 'News and product updates', enabled: false },
+    ]);
 
     return (
         <div style={{ color: '#fff' }}>
@@ -269,13 +275,8 @@ export default function SettingsPage() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {[
-                            { label: 'Payment alerts', desc: 'Get notified for every payment', enabled: true },
-                            { label: 'Weekly digest', desc: 'Summary of your weekly activity', enabled: true },
-                            { label: 'Failed payments', desc: 'Alert when a payment fails', enabled: true },
-                            { label: 'Marketing emails', desc: 'News and product updates', enabled: false },
-                        ].map((item, i) => (
-                            <div key={i} style={{
+                        {notifications.map((item, i) => (
+                            <div key={item.label} style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
@@ -291,14 +292,21 @@ export default function SettingsPage() {
                                         {item.desc}
                                     </div>
                                 </div>
-                                <div style={{
-                                    width: '48px',
-                                    height: '28px',
-                                    background: item.enabled ? lime : '#333',
-                                    borderRadius: '14px',
-                                    position: 'relative',
-                                    cursor: 'pointer'
-                                }}>
+                                <div
+                                    role="switch"
+                                    aria-checked={item.enabled}
+                                    tabIndex={0}
+                                    onClick={() => setNotifications((prev) => prev.map((n, idx) => idx === i ? { ...n, enabled: !n.enabled } : n))}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setNotifications((prev) => prev.map((n, idx) => idx === i ? { ...n, enabled: !n.enabled } : n)); } }}
+                                    style={{
+                                        width: '48px',
+                                        height: '28px',
+                                        background: item.enabled ? lime : '#333',
+                                        borderRadius: '14px',
+                                        position: 'relative',
+                                        cursor: 'pointer',
+                                        outline: 'none'
+                                    }}>
                                     <div style={{
                                         width: '22px',
                                         height: '22px',

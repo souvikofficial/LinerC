@@ -1,4 +1,5 @@
 "use client";
+import { DownloadButton } from "@/components/download-button"
 
 const lime = '#CDFF00';
 const darkGray = '#141414';
@@ -22,19 +23,7 @@ export default function EventsPage() {
                     </h1>
                     <p style={{ color: '#666', fontSize: '14px' }}>All x402 payment events</p>
                 </div>
-                <button style={{
-                    padding: '12px 24px',
-                    background: lime,
-                    color: '#0A0A0A',
-                    border: 'none',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em'
-                }}>
-                    EXPORT CSV
-                </button>
+                <DownloadButton data={events} filename="events.csv" label="Export CSV" />
             </div>
 
             <div style={{

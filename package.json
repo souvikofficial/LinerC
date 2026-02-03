@@ -3,6 +3,7 @@
     "private": true,
     "scripts": {
         "build": "turbo run build",
+        "dev:web:ui": "cross-env DISABLE_WORKERS=true pnpm --filter web dev",
         "dev": "turbo run dev",
         "lint": "turbo run lint",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -15,10 +16,11 @@
         "test:e2e": "turbo run test:e2e"
     },
     "devDependencies": {
-        "turbo": "^1.11.3",
-        "typescript": "^5.3.3",
+        "@types/node": "^20.11.16",
+        "cross-env": "^10.1.0",
         "prettier": "^3.2.4",
-        "@types/node": "^20.11.16"
+        "turbo": "^1.11.3",
+        "typescript": "^5.3.3"
     },
     "packageManager": "pnpm@8.15.1",
     "engines": {

@@ -17,6 +17,7 @@ export default function RootLayout({
     return (
         <html lang="en" className="dark">
             <head>
+                <link rel="icon" href="/demo-avatar.png" />
                 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js" async></script>
             </head>
             <body className={inter.className}>{children}</body>

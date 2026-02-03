@@ -16,16 +16,21 @@ export function DownloadButton({ data, filename = "export.csv", label = "Export 
         // Get headers
         const headers = Object.keys(data[0])
 
+        // Helper to stringify and escape CSV values
+        const escapeCell = (value: any) => {
+            if (value === null || value === undefined) return ''
+            const str = String(value)
+            const escaped = str.replace(/"/g, '""')
+            if (/[",\n]/.test(str)) {
+                return `"${escaped}"`
+            }
+            return escaped
+        }
+
         // Create CSV content
         const csvContent = [
             headers.join(","),
-            ...data.map(row => headers.map(header => {
-                const cell = row[header]
-                // Escape quotes and wrap in quotes if contains comma
-                return typeof cell === 'string' && cell.includes(',')
-                    ? `"${cell}"`
-                    : cell
-            }).join(","))
+            ...data.map(row => headers.map(header => escapeCell(row[header])).join(","))
         ].join("\n")
 
         // Trigger download

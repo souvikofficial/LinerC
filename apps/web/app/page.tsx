@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from 'react';
 import Link from 'next/link';
 
 export default function Home() {
@@ -7,118 +8,77 @@ export default function Home() {
     const dark = '#0A0A0A';
     const darkGray = '#1A1A1A';
 
+    const handleNavClick = useCallback((e: React.MouseEvent, id?: string, href?: string) => {
+        if (id) {
+            e.preventDefault();
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            else if (href) window.location.href = href;
+        }
+    }, []);
+
     return (
-        <main style={{
-            minHeight: '100vh',
-            backgroundColor: dark,
-            color: '#ffffff',
-            fontFamily: 'Inter, system-ui, sans-serif'
-        }}>
+        <main className="min-h-screen text-white" style={{ backgroundColor: dark, fontFamily: 'Inter, system-ui, sans-serif' }}>
             {/* Nav */}
-            <header style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '24px 48px',
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 100,
-                background: 'rgba(10,10,10,0.8)',
-                backdropFilter: 'blur(12px)'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ color: lime, fontSize: '24px', fontWeight: 900 }}>⚡</span>
-                    <span style={{ fontSize: '22px', fontWeight: 900, letterSpacing: '-0.02em' }}>LinerC</span>
+            <header className="fixed inset-x-0 top-0 z-50 bg-[rgba(10,10,10,0.8)] backdrop-blur-md">
+                <div className="max-w-7xl mx-auto px-12 py-6 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[22px] font-extrabold" style={{ color: lime }}>⚡</span>
+                        <span className="text-xl font-extrabold tracking-tight">LinerC</span>
+                    </div>
+                    <nav className="flex gap-10 items-center" aria-label="Primary">
+                        <Link href="#features" onClick={(e) => handleNavClick(e, 'features')} className="text-gray-400 text-sm font-medium">Features</Link>
+                        <Link href="#how-it-works" onClick={(e) => handleNavClick(e, 'how-it-works')} className="text-gray-400 text-sm font-medium">How it works</Link>
+                        <Link href="/dashboard/integration" className="text-gray-400 text-sm font-medium underline">Dashboard</Link>
+                    </nav>
                 </div>
-                <nav style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
-                    <Link href="#features" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}>Features</Link>
-                    <Link href="#how-it-works" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}>How it works</Link>
-                    <Link href="/dashboard/integration" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 500, textDecoration: 'underline' }}>Dashboard</Link>
-                </nav>
             </header>
 
             {/* Hero Section */}
-            <section style={{
-                minHeight: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                padding: '120px 24px 80px',
-                background: `linear-gradient(180deg, ${dark} 0%, ${darkGray} 100%)`,
-                position: 'relative',
-                overflow: 'hidden'
-            }}>
+            <section className="min-h-screen flex flex-col items-center justify-center text-center pt-[120px] pb-20 px-6 bg-gradient-to-b" style={{ backgroundImage: `linear-gradient(180deg, ${dark} 0%, ${darkGray} 100%)` }}>
                 {/* Decorative lime gradient */}
-                <div style={{
-                    position: 'absolute',
-                    top: '10%',
-                    right: '-20%',
-                    width: '600px',
-                    height: '600px',
-                    background: `radial-gradient(circle, ${lime}20 0%, transparent 70%)`,
-                    filter: 'blur(80px)',
-                    pointerEvents: 'none'
-                }} />
+                <div className="pointer-events-none absolute top-[10%] -right-1/4 w-[600px] h-[600px] rounded-full" style={{ background: `radial-gradient(circle, ${lime}20 0%, transparent 70%)`, filter: 'blur(80px)' }} />
 
-                <h1 style={{
-                    fontSize: 'clamp(48px, 10vw, 120px)',
-                    fontWeight: 900,
-                    lineHeight: 0.95,
-                    letterSpacing: '-0.03em',
-                    marginBottom: '24px',
-                    textTransform: 'uppercase'
-                }}>
+                <img src="/demo-avatar.png" alt="LinerC logo" className="w-28 h-28 md:w-36 md:h-36 rounded-md mb-6" />
+
+                <h1 className="font-extrabold leading-[0.95] tracking-tight uppercase mb-6" style={{ fontSize: 'clamp(48px, 10vw, 120px)' }}>
                     PAYMENTS<br />
                     <span style={{ color: lime }}>ONCHAIN</span>
                 </h1>
 
-                <p style={{
-                    fontSize: '18px',
-                    color: '#888',
-                    maxWidth: '500px',
-                    marginBottom: '48px',
-                    lineHeight: 1.6
-                }}>
-                    LinerC is a stablecoin-native payment platform with
-                    seamless x402 integration and powerful analytics.
+                <p className="text-base text-gray-400 max-w-2xl mb-6 leading-relaxed">
+                    LinerC is a stablecoin-native payment platform with seamless x402 integration and powerful analytics.
                 </p>
 
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <Link href="/dashboard/integration" style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '20px 40px',
-                        background: lime,
-                        color: dark,
-                        borderRadius: '0',
-                        textDecoration: 'none',
-                        fontWeight: 800,
-                        fontSize: '14px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        transition: 'transform 0.2s'
-                    }}>
+                <div className="flex gap-3 justify-center mb-7 flex-wrap text-sm text-gray-300">
+                    <div className="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" style={{ color: lime }} aria-hidden>
+                            <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+                        </svg>
+                        <span className="font-semibold text-gray-200">Instant settlement</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 text-gray-200" fill="currentColor" aria-hidden>
+                            <path d="M12 17a1 1 0 100-2 1 1 0 000 2z" />
+                            <path d="M17 8V7a5 5 0 00-10 0v1H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-2zm-7-1a3 3 0 116 0v1H10V7z" />
+                        </svg>
+                        <span className="font-semibold text-gray-200">Built-in routing</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 text-gray-200" fill="currentColor" aria-hidden>
+                            <path d="M3 3v18h4V7H3zm7 7v11h4V10h-4zm7-4v15h4V6h-4z" />
+                        </svg>
+                        <span className="font-semibold text-gray-200">Real-time analytics</span>
+                    </div>
+                </div>
+
+                <div className="flex gap-4 flex-wrap justify-center">
+                    <Link href="/dashboard/integration" aria-label="Get started with LinerC" className="inline-flex items-center gap-2 px-9 py-4 bg-[--lime] text-black font-extrabold uppercase text-sm rounded-sm" style={{ background: lime }}>
                         GET STARTED ↓
                     </Link>
-                    <Link href="#features" style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '20px 40px',
-                        background: darkGray,
-                        color: '#fff',
-                        borderRadius: '0',
-                        textDecoration: 'none',
-                        fontWeight: 800,
-                        fontSize: '14px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em'
-                    }}>
+                    <Link href="#features" onClick={(e) => handleNavClick(e, 'features')} aria-label="Learn more about features" className="inline-flex items-center gap-2 px-9 py-4 bg-[#161616] text-white font-extrabold uppercase text-sm rounded-sm">
                         LEARN MORE →
                     </Link>
                 </div>
